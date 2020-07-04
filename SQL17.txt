@@ -1,0 +1,81 @@
+信息系统与数据库技术练习17答题卡
+
+班级：      信息管理一班
+姓名：     余晓伟
+学号：     20190307109
+
+注：请将答案放置在序号下方。*/
+
+（一）
+/*1、打开PROJECT数据库。*/
+USE PROJECT
+/*2、在Employee表中查询每个部门的部门号(Did)、平均基本工资(BasePay的平均值)、
+人数(Eid个数)、交保险人数(Insurance个数)，所有字段显示中文别名。*/
+SELECT Did AS 部门号,AVG(BasePay) AS 平均基本工资,COUNT(Eid) AS 人数,COUNT(Insurance) AS 交保险人数
+FROM Employee
+GROUP BY Did
+ORDER BY AVG(Employee) DESC
+/*3、在Employee表中分别统计男职工和女职工的平均工龄及人数，
+结果显示性别(Esex)、平均工龄(根据WorkDate计算工龄)
+和人数(记录数)。要求平均工龄显示别名为AvgSeniority,
+人数显示别名为Cnt。*/
+SELECT Esex,AVG(DATEDIFF(YY,WorkDate,GETDATE())) AS AvgSeniority,COUNT(Sid) AS Cnt
+FROM Employee
+GROUP BY Esex
+/*4、在Employee表中查询每个部门的男、女生职工人数，
+结果要求显示部门号(Eid)、性别(Esex)和人数(Eid个数)。
+结果按性别排序。人数显示别名为Cnt*/
+SELECT Eid,Esex,COUNT(*) AS Cnt
+FROM Employee
+GROUP BY Eid,Esex
+ORDER BY Eid
+/*5、在EP表中查询总报酬大于等于13000的项目号和该项目总报酬。
+结果显示项目号(Pid)和总报酬(Wages的总和)，
+并按总报酬升序。*/
+SELECT Pid,AVG(Wages)
+FROM EP
+GROUP BY Pid
+HAVING SUM(Wages)>=13000
+ORDER BY SUM(Wages) DESC
+/*6、在EP表中分别查询项目号为’A002’或’A004’ 的总报酬，
+结果要求显示项目号(Pid)和总报酬(Wages的总和)。*/
+SELECT Pid,SUM(Wages)
+FROM EP
+WHERE Pid IN ('A002','A004')
+GROUP BY Pid
+/*7、在Employee表中查询每个部门基本工资大于5000的人数，
+结果要求显示部门号(Did)和人数(记录数)。*/
+SELECT Did,COUNT(*)
+FROM Employee
+GROUP BY Did
+HAVING COUNT(*)>=5000
+8、在EM表中查询参与人数大于等于2的项目号和人数，
+结果要求显示项目号(Pid)和人数(Eid个数)*/
+SELECT Pid,COUNT(Eid)
+FROM EM
+WHERE Employee>=2
+GROUP BY Pid
+/*9、创建一张Involved表，表中有以下字段：
+(1)Id int 主键 标识列，种子和递增量均为1
+(2)Pid char 长度4 不能为空 外键 参照Project表
+(3)Eid char 长度4 不能为空 外键 参照Employee表
+(4)Idate smalldatetime
+(5)Inum decimal 精度12，小数位数3 */
+CREATE TABLE Involved
+(Id int PRIMARY KEY IDENTITY(1,1),
+Pid char varchar(4) NOT NULL,FOREIGN KEY REFERENCES Project,
+Eid char varchar(4) NOT NULL,FOREIGN KEY REFERENCES Employee,
+Idate smalldatetime
+Tpay numeric(12,3), 
+)
+/*10、在Involved表插入以下纪录
+Pid	Eid
+A001	1002
+A001	1004
+A002	1004*/
+INSERT Involved(Pid,Eid)
+VALUES('A001',1002),
+('A001',1004),
+('A002',1004)
+/*11、查询Involved表全部字段。然后查看ID字段值、理解标识列的作用*/
+SELECT * FROM Involved
